@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Rapor · {{ rapor.well.ad }}{% endblock %}
+{% block content %}
+<div class="kart">
+  <h1>{{ rapor.well.ad }} · {{ rapor.rapor_tarihi }}</h1>
+  <p class="soluk">Durum: {{ rapor.get_durum_display }} · Yükleyen: {{ rapor.yukleyen|default:"-" }} · <a href="{{ rapor.dosya.url }}">Dosya</a> · <a href="{% url 'well_detail' rapor.well.pk %}">Kuyuya dön</a></p>
+  {% for u in rapor.uyarilar %}<p class="uyari">⚠ {{ u }}</p>{% endfor %}
+  {% if rapor.hata %}<p class="hata">{{ rapor.hata }}</p>{% endif %}
+  {% if rapor.metin %}
+    <form method="post" action="{% url 'report_analyze' rapor.pk %}">{% csrf_token %}
+      <button>Claude ile analiz et</button>
+      <span class="soluk">Rapor metni Claude API'ye gönderilir.</span>
+    </form>
+  {% endif %}
+</div>
+
+<div class="kart">
+  <h2>Öneriler</h2>
+  {% for oneri in oneriler %}
+    {% include "proposals/_oneri.html" %}
+  {% empty %}<p class="soluk">Henüz öneri yok.</p>{% endfor %}
+</div>
+
+<div class="kart">
+  <h2>Çıkarılan metin</h2>
+  <pre style="white-space:pre-wrap">{{ metin_onizleme }}</pre>
+  {% if rapor.metin|length > 3000 %}<p class="soluk">Metnin ilk 3000 karakteri gösteriliyor.</p>{% endif %}
+</div>
+{% endblock %}

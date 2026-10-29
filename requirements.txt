@@ -1,0 +1,5 @@
+Django>=5.1,<5.2
+anthropic
+pypdf
+beautifulsoup4
+pillow

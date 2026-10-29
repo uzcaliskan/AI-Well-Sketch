@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="kart">
+  <h1>Kuyular</h1>
+  <form method="get"><input name="q" value="{{ q }}" placeholder="Kuyu adı (güncel veya eski)"> <button>Ara</button></form>
+</div>
+<div class="kart">
+  <table>
+    <tr><th>Kuyu</th><th>Referans</th></tr>
+    {% for w in sayfa %}
+      <tr><td><a href="{% url 'well_detail' w.pk %}">{{ w.ad }}</a></td><td>{{ w.referans_tipi }} {{ w.referans_yuksekligi }} m</td></tr>
+    {% empty %}
+      <tr><td colspan="2" class="soluk">Kuyu yok. <a href="{% url 'well_create' %}">Yeni kuyu ekleyin</a>.</td></tr>
+    {% endfor %}
+  </table>
+  <p class="soluk">
+    {% if sayfa.has_previous %}<a href="?sayfa={{ sayfa.previous_page_number }}&q={{ q|urlencode }}">« Önceki</a>{% endif %}
+    Sayfa {{ sayfa.number }} / {{ sayfa.paginator.num_pages }}
+    {% if sayfa.has_next %}<a href="?sayfa={{ sayfa.next_page_number }}&q={{ q|urlencode }}">Sonraki »</a>{% endif %}
+  </p>
+</div>
+{% endblock %}

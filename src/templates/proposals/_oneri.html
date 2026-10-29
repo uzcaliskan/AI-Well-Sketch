@@ -1,0 +1,22 @@
+<div style="border-top:1px solid var(--cizgi);padding:8px 0">
+  <strong>{{ oneri.arac_adi }}</strong>
+  <span class="soluk">· {{ oneri.get_durum_display }}{% if oneri.guven %} · güven: {{ oneri.guven }}{% endif %}{% if oneri.olay_tarihi %} · {{ oneri.olay_tarihi }}{% endif %}</span>
+  {% if oneri.dayanak_alinti %}<blockquote class="soluk" style="margin:4px 0">“{{ oneri.dayanak_alinti }}”</blockquote>{% endif %}
+  {% for u in oneri.uyarilar %}<div class="uyari">⚠ {{ u }}</div>{% endfor %}
+  {% if oneri.durum == "ONAY_BEKLIYOR" %}
+    <form method="post" action="{% url 'proposal_approve' oneri.pk %}">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      {% if oneri.bilgi_mi %}
+        <pre style="white-space:pre-wrap">{% for k, v in oneri.parametreler.items %}{{ v }}{% endfor %}</pre>
+        <input type="hidden" name="parametreler" value="{}">
+        <button class="ikincil">Okundu</button>
+      {% else %}
+        <textarea name="parametreler" rows="8">{{ oneri.parametreler_json }}</textarea>
+        <button>Onayla</button>
+        <button class="ikincil" formaction="{% url 'proposal_reject' oneri.pk %}">Reddet</button>
+        <span class="soluk">Gerekirse JSON'u düzeltip onaylayabilirsiniz.</span>
+      {% endif %}
+    </form>
+  {% endif %}
+</div>

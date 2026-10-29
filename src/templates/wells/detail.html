@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ well.ad }} · Well Sketch{% endblock %}
+{% block content %}
+<div class="kart">
+  <h1>{{ well.ad }}</h1>
+  <p class="soluk">
+    Referans: {{ well.referans_tipi }} {{ well.referans_yuksekligi }} m ·
+    Adlar: {% for a in adlar %}{{ a.ad }}{% if a.bitis %} (eski){% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}
+  </p>
+  <a class="dugme" href="{% url 'report_create' well.pk %}">Rapor yükle</a>
+  <a class="dugme" href="{% url 'photo_create' well.pk %}">Fotoğraf yükle</a>
+  <a class="dugme" href="{% url 'well_rename' well.pk %}">Düzenle / yeniden adlandır</a>
+</div>
+
+<div class="izgara">
+  <div>
+    <form method="get" class="kart">
+      <label>Birim
+        <select name="birim"><option value="m" {% if birim == "m" %}selected{% endif %}>m</option><option value="ft" {% if birim == "ft" %}selected{% endif %}>ft</option></select>
+      </label>
+      <label>Tarih <input type="date" name="tarih" value="{{ tarih|date:'Y-m-d' }}"></label>
+      <button>Göster</button>
+      {% if tarih %}<span class="soluk">{{ tarih }} tarihindeki görünüm</span>{% endif %}
+    </form>
+    {{ svg|safe }}
+  </div>
+
+  <div>
+    <div class="kart">
+      <h2>Onay bekleyen öneriler</h2>
+      {% for oneri in bekleyenler %}
+        {% include "proposals/_oneri.html" %}
+      {% empty %}
+        <p class="soluk">Bekleyen öneri yok.</p>
+      {% endfor %}
+    </div>
+
+    <div class="kart">
+      <h2>Raporlar</h2>
+      <table>
+        {% for r in raporlar %}
+          <tr><td><a href="{% url 'report_detail' r.pk %}">{{ r.rapor_tarihi }}</a></td><td>{{ r.get_durum_display }}</td></tr>
+        {% empty %}<tr><td class="soluk">Rapor yok.</td></tr>{% endfor %}
+      </table>
+    </div>
+
+    <div class="kart">
+      <h2>Olay geçmişi</h2>
+      <table>
+        {% for o in olaylar %}
+          <tr><td>{{ o.olay_tarihi }}</td><td>{{ o.tip }}</td><td class="soluk">{{ o.onaylayan|default:"-" }}</td></tr>
+        {% empty %}<tr><td class="soluk">Henüz onaylanmış olay yok.</td></tr>{% endfor %}
+      </table>
+    </div>
+
+    <div class="kart">
+      <h2>Fotoğraflar</h2>
+      <div class="fotolar">
+        {% for f in fotograflar %}
+          <a href="{{ f.dosya.url }}" title="{{ f.tarih }} {{ f.not_metni }}"><img src="{{ f.dosya.url }}" alt="{{ f.tarih }}"><span class="soluk">{{ f.tarih }}</span></a>
+        {% empty %}<span class="soluk">Fotoğraf yok.</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
