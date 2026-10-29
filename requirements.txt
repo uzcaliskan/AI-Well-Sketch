@@ -1,5 +1,5 @@
 Django>=5.1,<5.2
-anthropic
+requests
 pypdf
 beautifulsoup4
 pillow

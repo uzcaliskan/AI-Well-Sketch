@@ -1,6 +1,6 @@
 # LLM Araç Listesi (TASLAK)
 
-> Claude'un tool calling ile çağırabileceği araçların **önerilen** listesi. Kullanıcı onaylamadı; isimler ve alanlar değişebilir.
+> LLM'in (şirket içi vLLM, Qwen3.5 397B) tool calling ile çağırabileceği araçların **önerilen** listesi. Kullanıcı onaylamadı; isimler ve alanlar değişebilir.
 > Alan içerikleri [kuyu-tasarim-kurallari.md](kuyu-tasarim-kurallari.md) kural tabanından türetilmiştir.
 > Kurallar: [kurallar-ve-sinirlar.md](kurallar-ve-sinirlar.md) §1–3. Karar: [kararlar.md](kararlar.md) K-04, K-05.
 

@@ -1,6 +1,6 @@
 # Şirket Veritabanı İzleme — Pseudo Kod
 
-> **Sonraki aşama (Aşama 4).** Başlangıç sürümünde rapor elle yüklenir (kararlar.md K-00). LLM artık Claude API'dir (K-04);
+> **Sonraki aşama (Aşama 4).** Başlangıç sürümünde rapor elle yüklenir (kararlar.md K-00). LLM şirket içi vLLM'dir (K-04);
 > aşağıda geçen "llm" adımı buna karşılık gelir.
 
 > Gerçek kod DEĞİLDİR. Şirket DB yapısı bilinmediği için tablo/sütun adları **yer tutucudur**

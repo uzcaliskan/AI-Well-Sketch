@@ -1,4 +1,4 @@
-"""Raporu Claude'a gönderir, araç çağrılarını öneri kayıtlarına çevirir.
+"""Raporu şirket içi vLLM modeline gönderir, araç çağrılarını öneri kayıtlarına çevirir.
 
 Hiçbir kuyu verisi burada değişmez: çıktı yalnızca ONAY_BEKLIYOR durumundaki Proposal kayıtlarıdır (K-05).
 """
@@ -14,7 +14,7 @@ from apps.reports.models import Report
 from apps.wells.state import BILGI_ARACLARI, kuyu_durumu
 from apps.wells.validation import dogrula
 
-from .client import claude_istemcisi
+from .client import vllm_istemcisi
 from .tools import arac_tanimlari
 
 SISTEM_ISTEMI = """Sen bir kuyu mühendisliği asistanısın. Günlük sondaj/tamamlama/workover raporunu ve kuyunun \
@@ -56,6 +56,27 @@ def _tarih(deger, varsayilan):
         return varsayilan
 
 
+def _cagrilari_ayikla(yanit, gecerli_adlar):
+    """Yanıttaki araç çağrılarını (ad, parametre sözlüğü) listesine çevirir; geçersizleri sayar."""
+    try:
+        ham = (yanit["choices"][0]["message"].get("tool_calls") or [])[:MAKS_ONERI]
+    except (KeyError, IndexError, TypeError, AttributeError):
+        ham = []
+    cagrilar, atlanan = [], 0
+    for c in ham:
+        try:
+            ad = c["function"]["name"]
+            parametreler = json.loads(c["function"]["arguments"] or "{}")
+        except (KeyError, TypeError, ValueError):
+            atlanan += 1
+            continue
+        if ad not in gecerli_adlar or not isinstance(parametreler, dict):
+            atlanan += 1
+            continue
+        cagrilar.append((ad, parametreler))
+    return cagrilar, atlanan
+
+
 def mesaj_olustur(rapor):
     if len(rapor.metin) > settings.MAX_RAPOR_KARAKTER:
         raise ValueError("Rapor metni çok uzun; analiz edilemedi.")
@@ -75,23 +96,28 @@ def analiz_et(rapor, istemci=None):
     if not rapor.metin.strip():
         raise ValueError("Raporda analiz edilecek metin yok.")
 
-    istemci = istemci or claude_istemcisi()
-    yanit = istemci.messages.create(
-        model=settings.CLAUDE_MODEL,
-        max_tokens=settings.CLAUDE_MAX_TOKENS,
-        system=SISTEM_ISTEMI + _kural_tabani(),
-        tools=arac_tanimlari(),
-        tool_choice={"type": "any"},
-        messages=[{"role": "user", "content": mesaj_olustur(rapor)}],
+    istemci = istemci or vllm_istemcisi()
+    araclar = arac_tanimlari()
+    yanit = istemci.sohbet(
+        mesajlar=[
+            {"role": "system", "content": SISTEM_ISTEMI + _kural_tabani()},
+            {"role": "user", "content": mesaj_olustur(rapor)},
+        ],
+        araclar=araclar,
     )
 
-    cagrilar = [b for b in yanit.content if getattr(b, "type", None) == "tool_use"][:MAKS_ONERI]
+    cagrilar, atlanan = _cagrilari_ayikla(yanit, {a["function"]["name"] for a in araclar})
+    if not cagrilar:
+        raise ValueError(
+            "Model geçerli bir araç çağrısı üretmedi"
+            + (f" ({atlanan} geçersiz çağrı atlandı)" if atlanan else "")
+            + ". vLLM sunucusunda tool calling açık mı kontrol edin."
+        )
     rapor_metni = _normalize_metin(rapor.metin)
     oneriler = []
     with transaction.atomic():
-        for blok in cagrilar:
-            parametreler = dict(blok.input)
-            if blok.name in BILGI_ARACLARI:
+        for arac_adi, parametreler in cagrilar:
+            if arac_adi in BILGI_ARACLARI:
                 uyarilar, olay_tarihi = [], None
                 dayanak = ""
             else:
@@ -99,7 +125,7 @@ def analiz_et(rapor, istemci=None):
                 if not dayanak:  # dayanaksız öneri reddedilir (kurallar-ve-sinirlar.md §2)
                     continue
                 olay_tarihi = _tarih(parametreler.get("olay_tarihi"), None)
-                uyarilar = dogrula(rapor.well, blok.name, parametreler, olay_tarihi or rapor.rapor_tarihi)
+                uyarilar = dogrula(rapor.well, arac_adi, parametreler, olay_tarihi or rapor.rapor_tarihi)
                 if olay_tarihi is None:
                     uyarilar.append("Olay tarihi geçersiz/eksik; onaylamadan önce düzeltilmeli.")
                 if _normalize_metin(dayanak) not in rapor_metni:
@@ -108,7 +134,7 @@ def analiz_et(rapor, istemci=None):
                 Proposal.objects.create(
                     rapor=rapor,
                     well=rapor.well,
-                    arac_adi=blok.name,
+                    arac_adi=arac_adi,
                     parametreler=parametreler,
                     olay_tarihi=olay_tarihi,
                     dayanak_alinti=dayanak,
@@ -117,6 +143,6 @@ def analiz_et(rapor, istemci=None):
                 )
             )
         rapor.durum = Report.Durum.ANALIZ_EDILDI
-        rapor.hata = ""
+        rapor.hata = f"{atlanan} geçersiz araç çağrısı atlandı." if atlanan else ""
         rapor.save(update_fields=["durum", "hata"])
     return oneriler

@@ -1,11 +1,12 @@
 # Well Sketch Webapp — Bağlam Haritası
 
 Günlük sondaj, tamamlama ve workover raporlarından kuyu şemasını (well sketch) güncel tutan web uygulaması.
-**Başlangıç sürümü (en basit hâl):** kullanıcı raporu yükler, Claude API değişiklikleri tool calling ile **öneri** olarak üretir,
+**Başlangıç sürümü (en basit hâl):** kullanıcı raporu yükler, şirket içi vLLM modeli değişiklikleri tool calling ile **öneri** olarak üretir,
 kullanıcı onaylayınca kuyu durumu güncellenir ve sketch yeniden çizilir. Şirket DB izleme ve Playwright sonraki aşamada.
 
-> **Durum:** Başlangıç sürümü kodlandı (`src/`): kuyu, rapor yükleme, Claude önerisi, onay akışı, olay geçmişi, SVG sketch, fotoğraf.
-> Kurulum ve çalıştırma: [../README.md](../README.md). Şirket DB izleyici ve Playwright yok (Aşama 4). Gerçek Claude API ile uçtan uca deneme henüz yapılmadı.
+> **Durum:** Başlangıç sürümü kodlandı (`src/`): kuyu, rapor yükleme, vLLM önerisi, onay akışı, olay geçmişi, SVG sketch, fotoğraf.
+> Kurulum ve çalıştırma: [../README.md](../README.md). Şirket DB izleyici ve Playwright yok (Aşama 4). Gerçek vLLM sunucusuyla uçtan uca deneme henüz yapılmadı (sunucu yalnızca şirket ağında).
+> **Veri dışarı çıkmaz (K-17):** harici LLM servisi yok, gerçek şirket verisi git deposuna girmez.
 
 ## Her görevde oku
 
@@ -21,7 +22,7 @@ kullanıcı onaylayınca kuyu durumu güncellenir ve sketch yeniden çizilir. Ş
 |---|---|
 | [hedefler.md](hedefler.md) | Kapsam, aşama veya öncelik konuşulurken |
 | [acik-sorular.md](acik-sorular.md) | Belirsiz bir noktaya rastlanınca; cevap gelince buraya işlenir |
-| [llm-araclari.md](llm-araclari.md) | Claude araç listesi (taslak); prompt, öneri/onay akışı veya araç şeması işi yapılırken |
+| [llm-araclari.md](llm-araclari.md) | LLM araç listesi (taslak); prompt, öneri/onay akışı veya araç şeması işi yapılırken |
 | [veri-modeli.md](veri-modeli.md) | Kavramsal veri modeli (taslak); tablo/model, olay geçmişi veya durum JSON'u işi yapılırken |
 | [uygulama-mantigi.md](uygulama-mantigi.md) | `src/` kodunu değiştirirken veya hata ayıklarken: tasarım kararları, durum motoru, onay akışı |
 | [kuyu-tasarim-kurallari.md](kuyu-tasarim-kurallari.md) | Sketch, geometri, doğrulama, LLM prompt/araç tasarımı (mühendislik kural tabanı, esas) |
@@ -30,7 +31,7 @@ kullanıcı onaylayınca kuyu durumu güncellenir ve sketch yeniden çizilir. Ş
 ## Akış (başlangıç sürümü)
 
 ```
-Rapor yükle (PDF/HTML) → metin çıkar → Claude API (tool call) → doğrulama → kullanıcı onayı → kuyu olayı → durum (JSON) → sketch
+Rapor yükle (PDF/HTML) → metin çıkar → vLLM (tool call) → doğrulama → kullanıcı onayı → kuyu olayı → durum (JSON) → sketch
 ```
 
 ## Kod yapısı
@@ -42,7 +43,7 @@ Henüz yok (Aşama 4): watcher (şirket DB izleyici), scraper (Playwright). Ara�
 
 ## Teknoloji
 
-Django · SQLite (başlangıç) · Claude API · (sonra: PostgreSQL, Playwright, iş kuyruğu).
+Django · SQLite (başlangıç) · vLLM (Qwen3.5 397B, `requests` ile) · (sonra: PostgreSQL, Playwright, iş kuyruğu).
 
 ## Temel kurallar
 

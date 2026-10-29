@@ -7,7 +7,7 @@
 
 ### K-00 · Önce en basit sürüm
 - Tarih: 2026-10-28 · Durum: **Kabul**
-- Proje önce en basit şekilde kurulur: tek kuyu, SQLite, elle rapor yükleme, Claude ile öneri, kullanıcı onayı, sketch.
+- Proje önce en basit şekilde kurulur: tek kuyu, SQLite, elle rapor yükleme, vLLM modeliyle öneri, kullanıcı onayı, sketch.
   Şirket DB izleyici, Playwright, kuyruk ve ölçek sonraki aşamalara kalır.
 - Bu karar K-02, K-03, K-07, K-12 ve B-02'nin kapsamını belirler (aşağıda).
 
@@ -27,11 +27,19 @@
 - Mantık pseudo kod olarak duruyor: `sirket-db-izleme-pseudo.md`. Kod şimdi yazılmaz.
 - Değişikliği algılama yöntemi şirket DB yapısına bağlı → açık soru.
 
-### K-04 · LLM: Claude API (tool calling)
-- Tarih: 2026-10-28 (2026-10-27'deki vLLM/Qwen kararının yerine geçti) · Durum: **Kabul**
-- Rapor analizi Claude API ile yapılır. Model adı ve API anahtarı yapılandırma / ortam değişkeninden verilir (kodda sabit değil).
-- Hangi Claude modeli kullanılacağı henüz seçilmedi → açık soru. Kodda varsayılan `claude-sonnet-5-5`, `CLAUDE_MODEL` ile değişir.
-- Kullanıcı (2026-10-28): "şimdilik Claude ile gidelim"; eski kuyu içe aktarmada yerel LLM konusu ertelendi (acik-sorular #7).
+### K-04 · LLM: şirket içi vLLM (Qwen3.5 397B), tool calling
+- Tarih: 2026-10-29 (2026-10-28'deki "şimdilik Claude" tercihinin yerine geçti; ilk karar 2026-10-27) · Durum: **Kabul**
+- Rapor analizi şirketteki **vLLM** sunucusundaki modelle yapılır (hedef model: Qwen3.5 397B). Sunucu OpenAI uyumlu `/v1/chat/completions` uç noktasını sunar; araç çağrısı `tools` + `tool_choice: required` ile yapılır.
+- Uç nokta adresi (`VLLM_BASE_URL`) ve servis edilen model adı (`VLLM_MODEL`) ortam değişkeniyle verilir, kodda sabit değil. Kodda varsayılan model adı yoktur.
+- HTTP istemcisi `requests`'tir (ek LLM SDK'sı yok). vLLM tarafında tool calling'in açık olması gerekir (`--enable-auto-tool-choice`, modele uygun `--tool-call-parser`); doğrulanmadı → açık soru #12.
+- Geliştirme ortamı kısıtı (kullanıcı, 2026-10-29): vLLM yalnızca şirket ağındadır; kişisel bilgisayarda gerçek model denenemez, testler yerel sahte sunucu/sahte istemci kullanır.
+
+### K-17 · Veri dışarı çıkmaz
+- Tarih: 2026-10-29 · Durum: **Kabul** (kaynak: kullanıcı: "herhangi bir veriyi dışarı atmamalı")
+- LLM çağrıları yalnızca şirket içi vLLM sunucusuna gider; harici LLM servisi (Claude API, OpenAI vb.) kullanılmaz.
+- Kod, özel ağ dışı adrese bağlanmayı reddeder (localhost, özel IP veya `VLLM_IZINLI_HOSTLAR` listesindeki ad dışında hata verir); proxy ayarlarını kullanmaz ve yönlendirmeleri izlemez.
+- Gerçek rapor, veritabanı ve fotoğraf dosyaları git deposuna girmez (`.gitignore`).
+- Şirket bilgisayarında Claude Code'un kendisi de vLLM'deki modelle çalıştırılacaktır (kullanıcı planı); bu kurulumun nasıl yapılacağı proje kapsamı dışındadır, doğrulanmadı.
 
 ### K-05 · Önce kullanıcı onayı, sonra uygulama
 - Tarih: 2026-10-27 · Durum: **Kabul**

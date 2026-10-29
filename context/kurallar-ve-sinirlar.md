@@ -14,13 +14,14 @@
 5. **Her değişiklik izlenebilir.** Her öneri ve uygulama: kaynak rapor, rapor tarihi, olay tarihi, öneren (LLM/kullanıcı),
    onaylayan, onay zamanı ile kaydedilir. Geçmiş kayıt silinmez; düzeltme yeni olay olarak eklenir.
 6. **Herhangi bir tarihteki sketch yeniden üretilebilir.**
+7. **Veri dışarı çıkmaz** (K-17). LLM yalnızca şirket içi vLLM'dir; harici servise rapor, kuyu verisi veya kod dışı hiçbir içerik gönderilmez. Gerçek şirket verisi git deposuna girmez.
 
 ## 2. LLM sınırları
 
 - Sadece [llm-araclari.md](llm-araclari.md) içindeki (taslak) araçları çağırabilir; serbest SQL, dosya veya ağ erişimi yoktur.
 - Girdisi: rapor metni, kuyunun mevcut durumu (JSON), kural tabanı. Başka kuyuların verisi bağlama konmaz.
-- Claude API harici bir servistir: rapor içeriği buraya gönderilir. Gizlilik/izin durumu netleşmeden gerçek raporlar gönderilmez (açık soru).
-- API anahtarı koda ve repoya yazılmaz, ortam değişkeninden okunur.
+- LLM'e bağlantı yalnızca `VLLM_BASE_URL` adresine yapılır; adres özel ağ dışındaysa kod bağlantıyı reddeder, proxy kullanılmaz, yönlendirme izlenmez.
+- Sunucu adresi, model adı ve (varsa) anahtar koda ve repoya yazılmaz, ortam değişkeninden okunur.
 - Her araç çağrısında rapordan **dayanak alıntısı** (ilgili cümle/satır) verir; dayanaksız öneri reddedilir.
 - Emin olmadığı veya çelişki gördüğü durumda veri değiştiren araç yerine **soru/uyarı aracı** çağırır.
 - Raporda tekrar edilen, zaten uygulanmış olayı yeniden önermez (değişiklik algılama mevcut duruma göre yapılır).

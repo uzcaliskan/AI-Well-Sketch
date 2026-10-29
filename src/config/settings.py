@@ -88,10 +88,15 @@ LOGOUT_REDIRECT_URL = "login"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Claude API (kararlar.md K-04). Anahtar yalnızca ortam değişkeninden okunur.
-ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
-CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5-5")
-CLAUDE_MAX_TOKENS = int(os.environ.get("CLAUDE_MAX_TOKENS", "4096"))
+# vLLM (kararlar.md K-04): şirket içi, OpenAI uyumlu uç nokta. Hiçbir veri dış servise gönderilmez.
+# Örn. VLLM_BASE_URL=http://10.0.0.5:8000/v1 ; VLLM_MODEL sunucudaki servis edilen model adıdır.
+VLLM_BASE_URL = os.environ.get("VLLM_BASE_URL", "")
+VLLM_MODEL = os.environ.get("VLLM_MODEL", "")
+VLLM_API_KEY = os.environ.get("VLLM_API_KEY", "")
+VLLM_MAX_TOKENS = int(os.environ.get("VLLM_MAX_TOKENS", "4096"))
+VLLM_TIMEOUT = float(os.environ.get("VLLM_TIMEOUT", "300"))
+# IP olmayan (alan adlı) şirket içi sunucu adları, virgülle ayrılmış. Örn. vllm.sirket.local
+VLLM_IZINLI_HOSTLAR = [h.strip().lower() for h in os.environ.get("VLLM_IZINLI_HOSTLAR", "").split(",") if h.strip()]
 MAX_RAPOR_KARAKTER = int(os.environ.get("MAX_RAPOR_KARAKTER", "300000"))
 
 KURAL_TABANI_YOLU = PROJECT_ROOT / "context" / "kuyu-tasarim-kurallari.md"

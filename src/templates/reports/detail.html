@@ -8,8 +8,8 @@
   {% if rapor.hata %}<p class="hata">{{ rapor.hata }}</p>{% endif %}
   {% if rapor.metin %}
     <form method="post" action="{% url 'report_analyze' rapor.pk %}">{% csrf_token %}
-      <button>Claude ile analiz et</button>
-      <span class="soluk">Rapor metni Claude API'ye gönderilir.</span>
+      <button>Modelle analiz et</button>
+      <span class="soluk">Rapor metni yalnızca şirket içi vLLM sunucusuna gönderilir.</span>
     </form>
   {% endif %}
 </div>

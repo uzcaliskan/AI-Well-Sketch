@@ -21,7 +21,7 @@ Proje önce **en basit şekilde** kurulur; otomasyon sonraki aşamalara bırakı
 
 1. Kullanıcı bir kuyuya **günlük raporu elle yükler** (PDF veya HTML).
 2. Rapordan metin çıkarılır.
-3. **LLM (Claude API)** raporu okur, kuyunun mevcut durumuyla karşılaştırır, değişiklikleri algılar ve
+3. **LLM (şirket içi vLLM, Qwen3.5 397B)** raporu okur, kuyunun mevcut durumuyla karşılaştırır, değişiklikleri algılar ve
    tanımlı **araçları (tool calling)** çağırarak değişiklik **önerileri** üretir.
 4. Öneriler **kullanıcı onayına** düşer. Kullanıcı onaylamadan hiçbir değişiklik uygulanmaz.
 5. Onaylanan değişiklikler kuyunun yapılandırılmış durumuna (JSON) işlenir ve sketch bu veriden yeniden çizilir.
@@ -55,7 +55,7 @@ Kullanıcı: rapor yükler (PDF / HTML)
 Metin çıkarma  →  uygulama DB: rapor kaydı (ham dosya + metin)
         │
         ▼
-LLM (Claude API)
+LLM (şirket içi vLLM)
   girdi: rapor metni + kuyunun mevcut JSON durumu + kural tabanı
   çıktı: tool call'lar  →  "değişiklik önerisi"
         │
@@ -74,7 +74,7 @@ Kuyu durumu (JSON, olay geçmişiyle) güncellenir  →  Sketch yeniden çizilir
 | Aktör | Rolü |
 |---|---|
 | Kullanıcı | Rapor yükler, önerileri onaylar/düzeltir, sketch'i görüntüler, fotoğraf yükler. Rol ayrımı henüz belirlenmedi. |
-| LLM (Claude API) | Raporu yorumlar, değişiklikleri tool call olarak önerir. Doğrudan veri değiştirmez, çizim yapmaz. |
+| LLM (şirket içi vLLM) | Raporu yorumlar, değişiklikleri tool call olarak önerir. Doğrudan veri değiştirmez, çizim yapmaz. Veri şirket ağından çıkmaz (K-17). |
 | Şirket web sitesi / şirket DB / izleyici / Playwright | **Sonraki aşama.** Otomatik rapor alımı ve tetik. Başlangıçta yok. |
 
 ## 6. Ölçek
@@ -89,7 +89,7 @@ Kuyu durumu (JSON, olay geçmişiyle) güncellenir  →  Sketch yeniden çizilir
 |---|---|---|
 | Web / arayüz | Django | Kararlaştırıldı |
 | Veritabanı | SQLite (başlangıç) | Kararlaştırıldı; ölçekte PostgreSQL'e geçiş sonra değerlendirilir |
-| LLM | Claude API (tool calling) | Kararlaştırıldı; model adı yapılandırmadan verilir |
+| LLM | vLLM üzerinde Qwen3.5 397B (OpenAI uyumlu API, tool calling, `requests` ile) | Kararlaştırıldı; adres ve model adı yapılandırmadan verilir |
 | Rapor formatı | PDF (HTML olabilir) | Bilgi; PDF'in metin mi taranmış mı olduğu açık soru |
 | Kazıma | Playwright | Ertelendi (sonraki aşama) |
 

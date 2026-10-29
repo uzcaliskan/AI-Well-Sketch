@@ -5,7 +5,7 @@
 
 ## Ana hedef
 
-Önce **en basit çalışan sürüm**: elle yüklenen günlük raporlardan, **Claude + kullanıcı onayı** ile bir kuyunun
+Önce **en basit çalışan sürüm**: elle yüklenen günlük raporlardan, **vLLM modeli + kullanıcı onayı** ile bir kuyunun
 well sketch'ini izlenebilir şekilde güncel tutmak. Otomasyon ve ölçek sonra gelir.
 
 ## Başlangıç sürümünün hedefleri
@@ -25,7 +25,8 @@ well sketch'ini izlenebilir şekilde güncel tutmak. Otomasyon ve ölçek sonra 
 
 - **Doğruluk önce:** Raporda olmayan değer uydurulmaz; emin olunmayan durum kullanıcıya sorulur.
 - **İzlenebilirlik:** Her öneri ve onay kim / ne zaman / hangi rapor bilgisiyle kaydedilir.
-- **Model yapılandırılabilirliği:** Model adı ve API anahtarı yapılandırmadan verilir, kodda sabit değildir.
+- **Model yapılandırılabilirliği:** vLLM adresi ve model adı yapılandırmadan verilir, kodda sabit değildir.
+- **Veri dışarı çıkmaz:** LLM yalnızca şirket içi vLLM'dir (K-17).
 - **Ölçeğe açık veri modeli (uzun vade):** yüzbinlerce kuyu, onbinlerce kullanıcı; başlangıçta bunun için altyapı kurulmaz.
 
 ## Aşamalar (öneri, kullanıcı onayı bekliyor)
@@ -35,7 +36,7 @@ well sketch'ini izlenebilir şekilde güncel tutmak. Otomasyon ve ölçek sonra 
 | 0 | Proje bağlam dosyaları (tamam) |
 | 1 | Veri modeli: kuyu, rapor, olay, öneri, fotoğraf (kodlandı) |
 | 2 | Sketch çizimi (JSON → görsel) ve elle veri girişiyle test (kodlandı, örnek veriyle gözle kontrol edildi) |
-| 3 | Rapor yükleme + Claude araç şemaları + öneri/onay akışı (kodlandı; gerçek Claude API ve gerçek rapor ile denenmedi) |
+| 3 | Rapor yükleme + LLM araç şemaları + öneri/onay akışı (kodlandı; gerçek vLLM sunucusu ve gerçek rapor ile denenmedi) |
 | 4 | Şirket DB izleyicisi ve Playwright kazıyıcı (otomatik tetik) |
 | 5 | Ölçek (PostgreSQL, iş kuyruğu), yetki, izleme |
 

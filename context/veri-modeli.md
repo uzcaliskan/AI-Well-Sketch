@@ -9,7 +9,7 @@
 Kuyunun durumu **olayların tarih sırasıyla uygulanmasının sonucudur** (K-09). Kaynak doğruluk **olay geçmişidir**; kuyu durumu (JSON) bundan türetilir ve yeniden üretilebilir.
 
 ```
-Rapor ──► (Claude) ──► Öneri ──onay──► Olay ──► Kuyu durumu (JSON) ──► Sketch
+Rapor ──► (LLM) ──► Öneri ──onay──► Olay ──► Kuyu durumu (JSON) ──► Sketch
                          │ red/düzelt                   ▲
                          ▼                              │ herhangi bir tarihe kadar uygula
                        kayıt kalır                  geçmiş görünüm

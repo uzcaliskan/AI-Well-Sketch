@@ -2,5 +2,9 @@
 __pycache__/
 *.pyc
 .env
+*.sqlite3
 src/db.sqlite3
 media/
+# Gerçek şirket verisi repoya girmez
+raporlar/
+*.pdf

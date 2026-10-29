@@ -1,4 +1,4 @@
-"""Claude araç şemaları (taslak liste: context/llm-araclari.md).
+"""LLM araç şemaları, OpenAI uyumlu `tools` biçiminde (taslak liste: context/llm-araclari.md).
 
 Araçlar veri değiştirmez; her çağrı bir öneri kaydına dönüşür (K-05).
 """
@@ -153,25 +153,19 @@ assert set(BILGI) == BILGI_ARACLARI
 
 
 def arac_tanimlari():
+    def arac(ad, aciklama, alanlar, zorunlu):
+        return {
+            "type": "function",
+            "function": {
+                "name": ad,
+                "description": aciklama,
+                "parameters": {"type": "object", "properties": alanlar, "required": zorunlu},
+            },
+        }
+
     araclar = []
     for ad, (aciklama, alanlar, zorunlu) in DEGISTIREN.items():
-        araclar.append(
-            {
-                "name": ad,
-                "description": aciklama,
-                "input_schema": {
-                    "type": "object",
-                    "properties": {**ORTAK, **alanlar},
-                    "required": ORTAK_ZORUNLU + zorunlu,
-                },
-            }
-        )
+        araclar.append(arac(ad, aciklama, {**ORTAK, **alanlar}, ORTAK_ZORUNLU + zorunlu))
     for ad, (aciklama, alanlar, zorunlu) in BILGI.items():
-        araclar.append(
-            {
-                "name": ad,
-                "description": aciklama,
-                "input_schema": {"type": "object", "properties": alanlar, "required": zorunlu},
-            }
-        )
+        araclar.append(arac(ad, aciklama, alanlar, zorunlu))
     return araclar

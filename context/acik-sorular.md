@@ -14,7 +14,7 @@
 4. **Rapor-kuyu eşleşmesi:** Kuyu adı benzersiz ve güncellenebilir (cevaplandı). Raporda kuyu adı yazıyor ve eski adlar saklanacak (cevaplandı). Eşleşmeyen ad için uyarı verilir (cevaplandı).
 5. **Rapor sıklığı:** Kuyu başına günde kaç rapor gelir? Toplam günlük rapor hacmi tahmini?
 6. **Geçmiş kayıtlar:** Eski kuyuların sketch'i eski kayıtlarla çizilecek (K-16, cevaplandı). Eski kayıtlar veritabanından gelecek (cevaplandı). Kalan: hangi veritabanı/tablolar, kayıtlar rapor metni mi yapılandırılmış veri mi? Geriye dönük işlemenin yükü/maliyeti (yüzbinlerce kuyuda büyük) nasıl yönetilecek? **Ertelendi.**
-7. **İçe aktarmada hangi LLM:** Kullanıcı eski kuyu işlemede Claude değil **yerel LLM** çalışacağını söyledi (ertelendi). Bu, K-04 (Claude API) ile nasıl birleşecek? Yerel LLM hangisi, nerede çalışacak? Henüz karar yok; K-04 değişmedi.
+7. **İçe aktarma:** Eski kuyuların içe aktarımında da şirket içi vLLM kullanılacak (K-04, K-17). Kalan: toplu onay ekranı ve yük yönetimi **ertelendi** (K-16).
 8. **Formasyon bilgisi:** Formasyon tepeleri raporlardan mı gelecek, başka bir kaynaktan mı (jeoloji veritabanı)?
 
 ## Kullanıcılar ve yetki
@@ -23,8 +23,8 @@
 11. **Erişim:** Uygulama sadece şirket ağında mı çalışacak, dışarıdan erişim olacak mı?
 
 ## LLM
-12. **Claude modeli ve hesap:** Hangi Claude modeli kullanılacak? API anahtarı/hesap hazır mı? Maliyet için bir bütçe sınırı var mı?
-13. **Veri gizliliği:** Rapor içerikleri Claude API'ye gönderilebilir mi (şirket politikası, gizlilik)? Gerçek raporlar test için kullanılabilir mi, yoksa anonimleştirme gerekir mi?
+12. **vLLM ortamı:** Sunucu adresi ve servis edilen model adı nedir? vLLM tool calling ile başlatılmış mı (`--enable-auto-tool-choice`, `--tool-call-parser`)? Bağlam penceresi ve aynı anda işlenebilecek istek sayısı? Sunucu IP ile mi, alan adıyla mı verilecek (alan adı ise `VLLM_IZINLI_HOSTLAR`)? API anahtarı gerekiyor mu?
+13. **Kod ve veri taşıma:** Şirket bilgisayarından GitHub'a kod göndermek serbest mi, yoksa depo yalnızca kişisel bilgisayardan mı beslenecek? Gerçek raporlar yalnızca şirket bilgisayarında mı kalacak (K-17)?
 
 ## Onay akışı
 14. **Kısmi onay:** Kullanıcı bir rapordaki önerilerin bir kısmını onaylayıp diğerlerini reddedebilsin mi? (Öneri: evet.)
@@ -50,8 +50,8 @@
 - Eski adlar saklanır; raporda kuyu adı yazar; eski tarihli kayıt güncellenirse sketch en baştan yeniden hesaplanır. — 2026-10-28
 - Raporu yazan ve onaylayan aynı kişi; onay beklerken yeni rapor gelmeyecek. — 2026-10-28
 - Veri değişirse (geriye dönük olay / revizyon) sketch ilgili olay tarihinden itibaren güncellenir. — 2026-10-28
-- Proje önce en basit sürümle başlar; LLM = Claude API; başlangıç tek kuyu, SQLite, elle rapor yükleme. Şirket DB izleyici ve Playwright sonraya. — 2026-10-28
-- (Geçersiz) Önceki vLLM/Qwen3.5 397B kararı Claude API ile değiştirildi; vLLM soruları kaldırıldı. — 2026-10-28
+- Proje önce en basit sürümle başlar: başlangıç tek kuyu, SQLite, elle rapor yükleme. Şirket DB izleyici ve Playwright sonraya. — 2026-10-28
+- LLM şirket içi vLLM'deki model olacak (Qwen3.5 397B); harici LLM servisi kullanılmaz, hiçbir veri dışarı çıkmaz (K-04, K-17). "Şimdilik Claude" tercihi ve Claude API açık soruları geçersiz. — 2026-10-29
 - Akış: süreç şirket veritabanını kontrol eder; kuyu kaydı güncellenince tetiklenir. Kod şimdilik yok, pseudo kod var. — 2026-10-27
 - Rapor formatı: web penceresinde PDF, HTML olabilir. — 2026-10-27
 - Değişiklikler önce kullanıcı onayına düşer. — 2026-10-27
