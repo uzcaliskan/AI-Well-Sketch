@@ -93,7 +93,26 @@ Kuyu durumu (JSON, olay geçmişiyle) güncellenir  →  Sketch yeniden çizilir
 | Rapor formatı | PDF (HTML olabilir) | Bilgi; PDF'in metin mi taranmış mı olduğu açık soru |
 | Kazıma | Playwright | Ertelendi (sonraki aşama) |
 
-## 8. Kaynak dosyalar
+## 8. Çalışma ortamı: iki bilgisayar
+
+Kullanıcı projeyi iki farklı bilgisayarda yürütür (kullanıcı, 2026-10-29):
+
+| Bilgisayar | Rolü | Erişimler |
+|---|---|---|
+| Kişisel | Proje ana hatları: tasarım, bağlam dosyaları, kod iskeleti, sahte veriyle testler | Şirket ağına ve vLLM'e erişim yok; gerçek şirket verisi yok |
+| Şirket | Uygulama ve gerçek ortam: şirket içi vLLM ile uçtan uca deneme, gerçek raporlar | Şirket ağı, vLLM, şirket verisi |
+
+- İki bilgisayar arasındaki **tek taşıma yolu git deposudur**. Göndermek için `git-push` becerisi kullanılır
+  (veri sızıntısı ve test kontrolünden sonra commit + push); diğer bilgisayardaki değişiklikleri almak için `git-pull` becerisi kullanılır
+  (yalnızca fast-forward; yerel çalışmayı ezmez). Her iki bilgisayarda da ilk açılışta `context/README.md` okunur.
+- **Şirket bilgisayarında çalışma şartları, en az kişisel bilgisayardaki kadar sıkı olmalıdır:** aynı `CLAUDE.md` ve `context/` kuralları geçerlidir,
+  testler aynı komutlarla çalıştırılır, push'tan önce aynı kontrol yapılır. Şirket bilgisayarında hiçbir kural gevşetilmez.
+- **KIRMIZI ÇİZGİ: şirket verisi hiçbir şekilde dışarı sızmaz** (K-17). Şirket bilgisayarındaki gerçek rapor, kuyu verisi, veritabanı, fotoğraf,
+  sunucu adresi/anahtar ve `.env` içeriği git'e, yani kişisel bilgisayara veya herhangi bir dış servise de gitmez. Şüphe varsa push edilmez, kullanıcıya sorulur.
+- Ortama özgü ayarlar (`VLLM_BASE_URL`, `VLLM_MODEL`, `VLLM_IZINLI_HOSTLAR`, anahtarlar) her bilgisayarda yerel `.env` içinde tutulur; repoya girmez.
+- Kişisel bilgisayarda gerçek vLLM denenemez; testler sahte sunucu/istemci kullanır. Gerçek uçtan uca doğrulama yalnızca şirket bilgisayarında yapılır.
+
+## 9. Kaynak dosyalar
 
 - Kural tabanı: [kuyu-tasarim-kurallari.md](kuyu-tasarim-kurallari.md)
 - Hedefler: [hedefler.md](hedefler.md)

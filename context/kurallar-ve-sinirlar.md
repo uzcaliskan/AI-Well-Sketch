@@ -14,7 +14,10 @@
 5. **Her değişiklik izlenebilir.** Her öneri ve uygulama: kaynak rapor, rapor tarihi, olay tarihi, öneren (LLM/kullanıcı),
    onaylayan, onay zamanı ile kaydedilir. Geçmiş kayıt silinmez; düzeltme yeni olay olarak eklenir.
 6. **Herhangi bir tarihteki sketch yeniden üretilebilir.**
-7. **Veri dışarı çıkmaz** (K-17). LLM yalnızca şirket içi vLLM'dir; harici servise rapor, kuyu verisi veya kod dışı hiçbir içerik gönderilmez. Gerçek şirket verisi git deposuna girmez.
+7. **KIRMIZI ÇİZGİ: Şirket verisi hiçbir şekilde dışarı çıkmaz** (K-17). LLM yalnızca şirket içi vLLM'dir; harici servise rapor, kuyu verisi veya kod dışı hiçbir içerik gönderilmez. Gerçek şirket verisi git deposuna girmez.
+   Bu kural hem kişisel hem şirket bilgisayarında, her görevde, istisnasız geçerlidir (bkz. [context.md](context.md) §8). Diğer kurallarla çelişirse bu kural kazanır; şüphede işlem yapılmaz, kullanıcıya sorulur.
+8. **İki bilgisayarda aynı kurallar.** Şirket bilgisayarındaki çalışma şartları en az kişisel bilgisayardaki kadar sıkıdır; hiçbir kural şirket ortamında gevşetilmez.
+   Git, iki bilgisayar arasındaki tek taşıma yoludur; şirket bilgisayarından push öncesi veri sızıntısı kontrolü zorunludur.
 
 ## 2. LLM sınırları
 

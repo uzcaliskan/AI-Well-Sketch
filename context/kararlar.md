@@ -41,6 +41,13 @@
 - Gerçek rapor, veritabanı ve fotoğraf dosyaları git deposuna girmez (`.gitignore`).
 - Şirket bilgisayarında Claude Code'un kendisi de vLLM'deki modelle çalıştırılacaktır (kullanıcı planı); bu kurulumun nasıl yapılacağı proje kapsamı dışındadır, doğrulanmadı.
 
+### K-18 · İki bilgisayarlı çalışma; şirket verisi için kırmızı çizgi
+- Tarih: 2026-10-29 · Durum: **Kabul** (kaynak: kullanıcı)
+- Kişisel bilgisayarda proje ana hatları oluşturulur, şirket bilgisayarında uygulanır; taşıma yolu git'tir (`git-push` becerisi).
+- Şirket bilgisayarındaki çalışma şartları en az kişisel bilgisayardaki kadar sıkı olur; kurallar gevşetilmez.
+- **Şirket verisi hiçbir şekilde dışarı sızmaz.** Kullanıcı bunu kırmızı çizgi olarak tanımladı; K-17'yi pekiştirir ve git üzerinden iki bilgisayar arası taşımayı da kapsar.
+- Ayrıntı: [context.md](context.md) §8.
+
 ### K-05 · Önce kullanıcı onayı, sonra uygulama
 - Tarih: 2026-10-27 · Durum: **Kabul**
 - LLM'in tool call'ları doğrudan veriyi değiştirmez; "öneri" kaydı oluşturur. Kullanıcı onaylayınca uygulanır.
