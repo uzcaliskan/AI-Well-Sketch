@@ -1,0 +1,1 @@
+- [kuyu-faaliyetleri-scraping](kuyu-faaliyetleri-scraping.md) — TPAO sitesinden kuyu faaliyet raporlarını çekme yöntemi

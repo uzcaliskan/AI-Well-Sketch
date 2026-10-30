@@ -80,3 +80,13 @@ Ayrıntılı proje geçmişi, hedef kitle, strateji ve kaynak bilgileri buraya
 kopyalanmamalı; context/README.md üzerinden yönlendirilmelidir.
 -->
 
+### Model Kimlik Doğrulama (Giriş)
+
+- **Dosya ilk okunduğunda** model kendini doğrulasın:
+  ```
+  [Model: <model-adı>] — Yerel/Bulut, Anthropic/Değil
+  ```
+- Anthropic modeli (Claude, Opus, Sonnet, Haiku, Fable) ise → **"Anthropic bulut modeli"**
+- Yerel model (vLLM, Ollama, Qwen, Llama, vs.) ise → **"Yerel model, Anthropic'e bağlantı yok"**
+- Bu doğrulama sadece oturum başında yapılır, her yanıtta tekrarlanmaz.
+

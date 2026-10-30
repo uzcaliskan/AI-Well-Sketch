@@ -3,3 +3,4 @@ requests
 pypdf
 beautifulsoup4
 pillow
+playwright
